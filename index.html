@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>普通平键键槽尺寸速查 — GB/T 1095-2003</title>
+<style>
+  :root{
+    --ink:#1a2332; --sub:#5b6b7f; --line:#d8dfe8; --bg:#f4f6f9;
+    --card:#ffffff; --accent:#1d4ed8; --accent-soft:#eaf0fe;
+    --warn:#b45309; --ok:#15803d; --hl:#fff8e1;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:"Microsoft YaHei","PingFang SC","Segoe UI",sans-serif;background:var(--bg);color:var(--ink);line-height:1.6;padding:24px 14px 60px}
+  .wrap{max-width:980px;margin:0 auto}
+  header{margin-bottom:20px}
+  header h1{font-size:24px;letter-spacing:.5px}
+  header .std{color:var(--sub);font-size:13.5px;margin-top:4px}
+  .panel{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:18px 20px;margin-bottom:16px;box-shadow:0 1px 3px rgba(20,40,80,.05)}
+  .panel h2{font-size:15px;color:var(--accent);margin-bottom:12px;display:flex;align-items:center;gap:8px}
+  .panel h2::before{content:"";width:4px;height:15px;background:var(--accent);border-radius:2px;display:inline-block}
+
+  /* 输入区 */
+  .inputs{display:flex;flex-wrap:wrap;gap:16px;align-items:flex-end}
+  .field{display:flex;flex-direction:column;gap:5px}
+  .field label{font-size:13px;color:var(--sub)}
+  .field input,.field select{padding:8px 10px;border:1px solid var(--line);border-radius:6px;font-size:16px;width:150px;background:#fff;color:var(--ink)}
+  .field input:focus,.field select:focus{outline:2px solid var(--accent-soft);border-color:var(--accent)}
+  .field .unit{font-size:12px;color:var(--sub)}
+  .err{color:var(--warn);font-size:13px;width:100%;display:none}
+
+  /* 结果卡片 */
+  #result{display:none}
+  .keyheadline{display:flex;flex-wrap:wrap;gap:14px;align-items:baseline;margin-bottom:12px}
+  .keyheadline .big{font-size:30px;font-weight:700;color:var(--accent)}
+  .keyheadline .mark{font-size:13.5px;background:var(--accent-soft);color:var(--accent);padding:4px 10px;border-radius:6px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+  .cell{background:#fafbfd;border:1px solid var(--line);border-radius:8px;padding:8px 12px}
+  .cell .k{font-size:12px;color:var(--sub)}
+  .cell .v{font-size:16.5px;font-weight:600;margin-top:2px}
+  .cell .v small{font-size:12px;color:var(--sub);font-weight:400}
+  .fit-tbl{width:100%;border-collapse:collapse;font-size:13.5px;margin-top:14px}
+  .fit-tbl th,.fit-tbl td{border:1px solid var(--line);padding:6px 8px;text-align:center;white-space:nowrap}
+  .fit-tbl th{background:#f0f4fa;font-weight:600}
+  .fit-tbl td.on{background:var(--hl);font-weight:600}
+  .fit-note{font-size:12px;color:var(--sub);margin-top:6px}
+  .lcheck{margin-top:10px;font-size:13.5px;padding:8px 12px;border-radius:8px;display:none}
+  .lcheck.ok{display:block;background:#effaf1;color:var(--ok);border:1px solid #bfe6c8}
+  .lcheck.bad{display:block;background:#fdf3e7;color:var(--warn);border:1px solid #f2d5ac}
+
+  /* 图 */
+  #diagram-box{display:flex;justify-content:center}
+  #diagram-box svg{max-width:100%;height:auto}
+
+  /* 完整表 */
+  .scroll{overflow-x:auto}
+  table.full{border-collapse:collapse;font-size:12.8px;width:100%;min-width:860px}
+  table.full th,table.full td{border:1px solid var(--line);padding:5px 7px;text-align:center;white-space:nowrap}
+  table.full thead th{background:#f0f4fa;position:sticky;top:0}
+  table.full tr.hit{background:var(--hl);font-weight:600}
+  table.full tr:hover{background:#f6f9ff}
+  .grp{border-left:2px solid #b9c6d8}
+
+  ul.notes{font-size:13px;color:var(--sub);padding-left:20px}
+  ul.notes li{margin:3px 0}
+  footer{font-size:12px;color:var(--sub);text-align:center;margin-top:22px}
+  button.copy{margin-left:auto;padding:7px 16px;border:1px solid var(--accent);background:#fff;color:var(--accent);border-radius:6px;font-size:13.5px;cursor:pointer}
+  button.copy:hover{background:var(--accent-soft)}
+  @media print{ body{background:#fff;padding:0} .panel{box-shadow:none;break-inside:avoid} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>普通平键键槽尺寸速查</h1>
+    <div class="std">依据 GB/T 1095-2003《平键 键槽的剖面尺寸》 / GB/T 1096-2003《普通平键》 · 单位：mm</div>
+  </header>
+
+  <!-- 输入 -->
+  <div class="panel">
+    <div class="inputs">
+      <div class="field">
+        <label>轴径 d <span class="unit">(6 ~ 500)</span></label>
+        <input type="number" id="d" value="30" min="6" max="500" step="0.1" autofocus>
+      </div>
+      <div class="field">
+        <label>连接型式</label>
+        <select id="fit">
+          <option value="normal" selected>正常连接（一般）</option>
+          <option value="loose">松连接（较松 / 导向平键）</option>
+          <option value="tight">紧密连接（较紧）</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>键长 L <span class="unit">（可选）</span></label>
+        <select id="L"><option value="">未指定</option></select>
+      </div>
+      <button class="copy" id="copyBtn" type="button">复制结果</button>
+      <div class="err" id="err"></div>
+    </div>
+  </div>
+
+  <!-- 结果 -->
+  <div class="panel" id="result">
+    <h2>查询结果</h2>
+    <div class="keyheadline">
+      <div class="big" id="r-key">—</div>
+      <div class="mark" id="r-mark">—</div>
+    </div>
+    <div class="grid">
+      <div class="cell"><div class="k">键槽宽 b（轴/毂基本尺寸）</div><div class="v" id="r-b">—</div></div>
+      <div class="cell"><div class="k">轴槽深 t₁ <span id="r-t1dev"></span></div><div class="v" id="r-t1">—</div></div>
+      <div class="cell"><div class="k">d − t₁ <span class="unit">(偏差取负)</span></div><div class="v" id="r-d-t1">—</div></div>
+      <div class="cell"><div class="k">毂槽深 t₂ <span id="r-t2dev"></span></div><div class="v" id="r-t2">—</div></div>
+      <div class="cell"><div class="k">d + t₂</div><div class="v" id="r-d-t2">—</div></div>
+      <div class="cell"><div class="k">键槽圆角半径 r（GB/T 1095）</div><div class="v" id="r-r">—</div></div>
+      <div class="cell"><div class="k">键倒角 / 倒圆 s（GB/T 1096）</div><div class="v" id="r-s">—</div></div>
+      <div class="cell"><div class="k">键长 L 范围</div><div class="v" id="r-l">—</div></div>
+      <div class="cell"><div class="k">每 100 mm 键质量 ≈（B型）</div><div class="v" id="r-m">—</div></div>
+    </div>
+    <div class="lcheck" id="lcheck"></div>
+    <table class="fit-tbl" id="fit-tbl"></table>
+    <div class="fit-note" id="fit-note"></div>
+  </div>
+
+  <!-- 剖面图 -->
+  <div class="panel">
+    <h2>键槽剖面示意图（按当前输入绘制）</h2>
+    <div id="diagram-box"></div>
+  </div>
+
+  <!-- 完整表 -->
+  <div class="panel">
+    <h2>完整尺寸表（当前行高亮）</h2>
+    <div class="scroll">
+      <table class="full" id="full-tbl"></table>
+    </div>
+  </div>
+
+  <!-- 注释 -->
+  <div class="panel">
+    <h2>注</h2>
+    <ul class="notes">
+      <li>在工作图中，轴槽深用 <b>d − t₁</b> 或 <b>t₁</b> 标注，毂槽深用 <b>d + t₂</b> 标注；(d − t₁)、(d + t₂) 的极限偏差按相应 t₁、t₂ 的偏差选取，但 <b>(d − t₁) 的偏差值应取负号</b>。</li>
+      <li>平键轴槽的<b>长度公差用 H14</b>；键宽 b 公差 h8、键高 h 公差 h11、键长 L 公差 h14（GB/T 1096-2003）。</li>
+      <li>键槽（轴槽及轮毂槽）对轴线的<b>对称度公差</b>一般按 GB/T 1184 中对称度 7~9 级选取，公称尺寸为键宽 b。</li>
+      <li>导向平键的轴槽与轮毂槽用<b>较松（松连接）</b>的公差。</li>
+      <li>除轴伸外，在保证传递所需转矩条件下，允许采用较小截面的键，但 t₁、t₂ 必要时应重新计算，使键侧与轮毂槽接触高度各为 h/2。</li>
+      <li>表中“轴径 d”一栏系沿用旧标准（1979 年）的数据，<b>仅供设计初选参考</b>，选定后应根据工况验算键的强度。</li>
+      <li>标记示例：圆头普通平键（A型）b=8、h=7、L=40 → <b>键 8×7×40 GB/T 1096-2003</b>；B型、C型分别记为 键 B8×7×40、键 C8×7×40。</li>
+    </ul>
+  </div>
+
+  <footer>数据核对自 GB/T 1095-2003 / GB/T 1096-2003（嘉立创FA手册、机械设计手册等多源交叉校验） · 仅供工程设计参考，重要场合请以标准正式文本为准</footer>
+</div>
+
+<script>
+/* ================= 数据 ================= */
+// r: 键槽圆角半径(GB/T 1095-2003)；s: 键倒角或倒圆(GB/T 1096-2003)
+const ROWS=[
+ {d0:6,  d1:8,  b:2,  h:2,  t1:1.2, t2:1.0, l0:6,  l1:20 },
+ {d0:8,  d1:10, b:3,  h:3,  t1:1.8, t2:1.4, l0:6,  l1:36 },
+ {d0:10, d1:12, b:4,  h:4,  t1:2.5, t2:1.8, l0:8,  l1:45 },
+ {d0:12, d1:17, b:5,  h:5,  t1:3.0, t2:2.3, l0:10, l1:56 },
+ {d0:17, d1:22, b:6,  h:6,  t1:3.5, t2:2.8, l0:14, l1:70 },
+ {d0:22, d1:30, b:8,  h:7,  t1:4.0, t2:3.3, l0:18, l1:90 },
+ {d0:30, d1:38, b:10, h:8,  t1:5.0, t2:3.3, l0:22, l1:110},
+ {d0:38, d1:44, b:12, h:8,  t1:5.0, t2:3.3, l0:28, l1:140},
+ {d0:44, d1:50, b:14, h:9,  t1:5.5, t2:3.8, l0:36, l1:160},
+ {d0:50, d1:58, b:16, h:10, t1:6.0, t2:4.3, l0:45, l1:180},
+ {d0:58, d1:65, b:18, h:11, t1:7.0, t2:4.4, l0:50, l1:200},
+ {d0:65, d1:75, b:20, h:12, t1:7.5, t2:4.9, l0:56, l1:220},
+ {d0:75, d1:85, b:22, h:14, t1:9.0, t2:5.4, l0:63, l1:250},
+ {d0:85, d1:95, b:25, h:14, t1:9.0, t2:5.4, l0:70, l1:280},
+ {d0:95, d1:110,b:28, h:16, t1:10.0,t2:6.4, l0:80, l1:320},
+ {d0:110,d1:130,b:32, h:18, t1:11.0,t2:7.4, l0:90, l1:360},
+ {d0:130,d1:150,b:36, h:20, t1:12.0,t2:8.4, l0:100,l1:400},
+ {d0:150,d1:170,b:40, h:22, t1:13.0,t2:9.4, l0:100,l1:400},
+ {d0:170,d1:200,b:45, h:25, t1:15.0,t2:10.4,l0:110,l1:450},
+ {d0:200,d1:230,b:50, h:28, t1:17.0,t2:11.4,l0:125,l1:500},
+ {d0:230,d1:260,b:56, h:32, t1:20.0,t2:12.4,l0:140,l1:500},
+ {d0:260,d1:290,b:63, h:32, t1:20.0,t2:12.4,l0:160,l1:500},
+ {d0:290,d1:330,b:70, h:36, t1:22.0,t2:14.4,l0:180,l1:500},
+ {d0:330,d1:380,b:80, h:40, t1:25.0,t2:15.4,l0:200,l1:500},
+ {d0:380,d1:440,b:90, h:45, t1:28.0,t2:17.4,l0:220,l1:500},
+ {d0:440,d1:500,b:100,h:50, t1:31.0,t2:19.4,l0:250,l1:500},
+];
+// 键槽宽 b 极限偏差（GB/T 1095-2003 表1）：[上偏差, 下偏差]，JS9 为 ±值
+const BDEV={
+ 2:'a',3:'a',4:'b',5:'b',6:'b',8:'c',10:'c',12:'d',14:'d',16:'d',18:'d',
+ 20:'e',22:'e',25:'e',28:'e',32:'f',36:'f',40:'f',45:'f',50:'f',
+ 56:'g',63:'g',70:'g',80:'g',90:'h',100:'h'};
+const DEV={
+ a:{H9:[.025,0],   D10:[.060,.020], N9:[-.004,-.029], JS9:.0125, P9:[-.006,-.031]},
+ b:{H9:[.030,0],   D10:[.078,.030], N9:[0,-.030],     JS9:.015,  P9:[-.012,-.042]},
+ c:{H9:[.036,0],   D10:[.098,.040], N9:[0,-.036],     JS9:.018,  P9:[-.015,-.051]},
+ d:{H9:[.043,0],   D10:[.120,.050], N9:[0,-.043],     JS9:.0215, P9:[-.018,-.061]},
+ e:{H9:[.052,0],   D10:[.149,.065], N9:[0,-.052],     JS9:.026,  P9:[-.022,-.074]},
+ f:{H9:[.062,0],   D10:[.180,.080], N9:[0,-.062],     JS9:.031,  P9:[-.026,-.088]},
+ g:{H9:[.074,0],   D10:[.220,.100], N9:[0,-.074],     JS9:.037,  P9:[-.032,-.106]},
+ h:{H9:[.087,0],   D10:[.260,.120], N9:[0,-.087],     JS9:.0435, P9:[-.037,-.124]},
+};
+// 键槽圆角半径 r（min,max）
+const R_OF=b=> b<=4?[.08,.16] : b<=8?[.16,.25] : b<=18?[.25,.40] : b<=32?[.40,.60] : b<=50?[.70,1.00] : b<=70?[1.20,1.60] : [2.00,2.50];
+// 键倒角/倒圆 s（min,max）
+const S_OF=b=> b<=4?[.16,.25] : b<=8?[.25,.40] : b<=18?[.40,.60] : b<=32?[.60,.80] : b<=50?[1.0,1.2] : b<=70?[1.6,2.0] : [2.5,3.0];
+// t1/t2 偏差（按键宽 b 分档：b≤5 → +0.1；6≤b≤32 → +0.2；b≥36 → +0.3）
+const TDEV=b=> b<=5?0.1 : b<=32?0.2 : 0.3;
+const LSERIES=[6,8,10,12,14,16,18,20,22,25,28,32,36,40,45,50,56,63,70,80,90,100,110,125,140,160,180,200,220,250,280,320,360,400,450,500];
+
+/* ================= 工具 ================= */
+const fmt=v=>{const s=(+v).toFixed(4).replace(/0+$/,'').replace(/\.$/,'');return s==='-0'?'0':s;};
+const dev=(v)=> (v>0?'+'+fmt(v):v<0?fmt(v):'0');
+const rng=(p,m)=> p===0?`0 / −${fmt(m)}`:`${dev(p)} / ${dev(m)}`;   // [上,下]
+const jss=v=> '±'+fmt(v);
+const mass=bh=> (0.000785*bh).toFixed(3).replace(/0+$/,'').replace(/\.$/,'');
+
+// IT14（用于 L 的 h14 偏差），GB/T 1800.1 公式
+function it14(L){
+  const seg=[[1,3],[3,6],[6,10],[10,18],[18,30],[30,50],[50,80],[80,120],[120,180],[180,250],[250,315],[315,400],[400,500]];
+  let D=3;
+  for(const[a,b] of seg){ if(L>a&&L<=b || (a===1&&L<=3)){D=Math.sqrt(a*b);break;} }
+  const i=0.45*Math.cbrt(D)+0.001*D, v=400*i;
+  return v<100?Math.round(v):v<1000?Math.round(v/10)*10:Math.round(v/50)*50;
+}
+
+/* ================= 匹配 ================= */
+function findRow(d){
+  if(d<6||d>500||isNaN(d))return null;
+  for(const r of ROWS){
+    if(r.d0===6? (d>=6&&d<=r.d1) : (d>r.d0&&d<=r.d1)) return r;
+  }
+  return null;
+}
+
+/* ================= 剖面图 ================= */
+function drawSVG(row,d,L){
+  const cx=300, cy=235;
+  const hubOD=d*1.6+26;
+  const k=230/hubOD;                    // mm → px
+  const rR=R_OF(row.b), sS=S_OF(row.b);
+  const R=d/2*k, b=row.b*k, t1=row.t1*k, t2=row.t2*k, h=row.h*k, rp=Math.max(rR[0]*k,1.5);
+  const top=cy-R;
+  const dw=640, dh=420;
+  const x0=cx-b/2, x1=cx+b/2;
+  const slotBot=top+t1, hubTop=top-t2, keyTop=top+t1-h;
+  // 键顶到毂槽底的间隙 = t1+t2-h
+  let s=`<svg viewBox="0 0 ${dw} ${dh}" xmlns="http://www.w3.org/2000/svg" font-family="Microsoft YaHei,sans-serif">`;
+  s+=`<defs><marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,1 L10,5 L0,9 z" fill="#1d4ed8"/></marker></defs>`;
+  // 毂
+  s+=`<circle cx="${cx}" cy="${cy}" r="${R+16}" fill="#eef3f9" stroke="#8fa3ba" stroke-width="1.2"/>`;
+  // 轴
+  s+=`<circle cx="${cx}" cy="${cy}" r="${R}" fill="#c9d6e4" stroke="#546a83" stroke-width="1.4"/>`;
+  // 轴键槽（下圆角）
+  s+=`<path d="M ${x0},${top} L ${x0},${slotBot-rp} Q ${x0},${slotBot} ${x0+rp},${slotBot} L ${x1-rp},${slotBot} Q ${x1},${slotBot} ${x1},${slotBot-rp} L ${x1},${top} Z" fill="#fff" stroke="#546a83" stroke-width="1.4"/>`;
+  // 毂键槽（上圆角）
+  s+=`<path d="M ${x0},${cy-R} L ${x0},${hubTop+rp} Q ${x0},${hubTop} ${x0+rp},${hubTop} L ${x1-rp},${hubTop} Q ${x1},${hubTop} ${x1},${hubTop+rp} L ${x1},${cy-R}" fill="none" stroke="#8fa3ba" stroke-width="1.2"/>`;
+  // 键
+  const kr=Math.max(sS[0]*k,1.5);
+  s+=`<path d="M ${x0},${slotBot} L ${x0},${keyTop+kr} Q ${x0},${keyTop} ${x0+kr},${keyTop} L ${x1-kr},${keyTop} Q ${x1},${keyTop} ${x1},${keyTop+kr} L ${x1},${slotBot} Z" fill="#f5c76b" stroke="#b8862f" stroke-width="1.3"/>`;
+  // 中心线
+  s+=`<line x1="${cx-8}" y1="${cy}" x2="${cx+R+26}" y2="${cy}" stroke="#c33" stroke-width="0.8" stroke-dasharray="10 4 2 4"/>`;
+  s+=`<line x1="${cx}" y1="${cy+R+8}" x2="${cx}" y2="${cy-R-10}" stroke="#c33" stroke-width="0.8" stroke-dasharray="10 4 2 4"/>`;
+  const DIM='#1d4ed8';
+  const dimH=(x,ya,yb,label,side)=>{ // 竖直尺寸
+    const ex=side>0?12:-12;
+    s+=`<line x1="${x}" y1="${ya}" x2="${x+ex*2.2}" y2="${ya}" stroke="${DIM}" stroke-width="0.7"/>`;
+    s+=`<line x1="${x}" y1="${yb}" x2="${x+ex*2.2}" y2="${yb}" stroke="${DIM}" stroke-width="0.7"/>`;
+    s+=`<line x1="${x+ex}" y1="${ya}" x2="${x+ex}" y2="${yb}" stroke="${DIM}" stroke-width="0.9" marker-start="url(#ar)" marker-end="url(#ar)"/>`;
+    s+=`<text x="${x+ex+(side>0?5:-5)}" y="${(ya+yb)/2+4}" font-size="12.5" fill="${DIM}" text-anchor="${side>0?'start':'end'}">${label}</text>`;
+  };
+  // b 尺寸（毂上方）
+  const by=hubTop-26;
+  s+=`<line x1="${x0}" y1="${hubTop}" x2="${x0}" y2="${by}" stroke="${DIM}" stroke-width="0.7"/>`;
+  s+=`<line x1="${x1}" y1="${hubTop}" x2="${x1}" y2="${by}" stroke="${DIM}" stroke-width="0.7"/>`;
+  s+=`<line x1="${x0}" y1="${by}" x2="${x1}" y2="${by}" stroke="${DIM}" stroke-width="0.9" marker-start="url(#ar)" marker-end="url(#ar)"/>`;
+  s+=`<text x="${cx}" y="${by-7}" font-size="12.5" fill="${DIM}" text-anchor="middle">b=${row.b}</text>`;
+  // t1（右侧）
+  dimH(x1,top,slotBot,`t₁=${fmt(row.t1)}`,1);
+  // t2（左侧）
+  dimH(x0,hubTop,top,`t₂=${fmt(row.t2)}`,-1);
+  // 直径
+  s+=`<text x="${cx+R*0.25}" y="${cy+R*0.55}" font-size="14" fill="#0f2b52" font-weight="600">⌀${fmt(d)}</text>`;
+  // 图例
+  const lx=490, ly=52;
+  s+=`<rect x="${lx-14}" y="${ly-24}" width="150" height="118" rx="8" fill="#fbfcfe" stroke="#d8dfe8"/>`;
+  s+=`<rect x="${lx}" y="${ly-12}" width="16" height="11" fill="#c9d6e4" stroke="#546a83" stroke-width="0.8"/><text x="${lx+24}" y="${ly-2}" font-size="12" fill="#334">轴</text>`;
+  s+=`<rect x="${lx}" y="${ly+12}" width="16" height="11" fill="#eef3f9" stroke="#8fa3ba" stroke-width="0.8"/><text x="${lx+24}" y="${ly+22}" font-size="12" fill="#334">轮毂</text>`;
+  s+=`<rect x="${lx}" y="${ly+36}" width="16" height="11" fill="#f5c76b" stroke="#b8862f" stroke-width="0.8"/><text x="${lx+24}" y="${ly+46}" font-size="12" fill="#334">普通平键 ${row.b}×${row.h}</text>`;
+  s+=`<text x="${lx}" y="${ly+76}" font-size="11" fill="#5b6b7f">r=${fmt(rR[0])}~${fmt(rR[1])}　s=${fmt(sS[0])}~${fmt(sS[1])}</text>`;
+  // 底部标注
+  s+=`<text x="24" y="${dh-16}" font-size="11.5" fill="#5b6b7f">键高 h=${row.h}（h11）　轴槽深 t₁（+${fmt(TDEV(row.b))}/0）　毂槽深 t₂（+${fmt(TDEV(row.b))}/0）</text>`;
+  s+=`</svg>`;
+  return s;
+}
+
+/* ================= 渲染 ================= */
+const $=id=>document.getElementById(id);
+let cur={row:null,d:null,L:null,fit:'normal'};
+
+function render(){
+  const d=parseFloat($('d').value);
+  const fit=$('fit').value;
+  const Lv=$('L').value?parseInt($('L').value):null;
+  const err=$('err');
+  const row=findRow(d);
+  err.style.display='none';
+  $('result').style.display='none';
+  if(!row){
+    err.textContent=d<6||d>500?'⚠ 轴径超出适用范围：本表适用于 d = 6 ~ 500 mm':'⚠ 请输入有效轴径';
+    err.style.display='block';
+    $('full-tbl').innerHTML=buildFull(null);
+    return;
+  }
+  cur={row,d,L:Lv,fit};
+  const dv=DEV[BDEV[row.b]], td=TDEV(row.b);
+
+  $('result').style.display='block';
+  $('r-key').textContent=`键 ${row.b}×${row.h}`;
+  $('r-mark').textContent=Lv?`标记示例：键 ${row.b}×${row.h}×${Lv} GB/T 1096-2003`:`键长 L 应在 ${row.l0}~${row.l1} 内按标准系列选取`;
+  $('r-b').innerHTML=`${row.b} <small>（宽度）</small>`;
+  $('r-t1dev').innerHTML=`<small>(+${fmt(td)}/0)</small>`;
+  $('r-t1').textContent=fmt(row.t1);
+  $('r-t2dev').innerHTML=`<small>(+${fmt(td)}/0)</small>`;
+  $('r-t2').textContent=fmt(row.t2);
+  $('r-d-t1').textContent=fmt(d-row.t1);
+  $('r-d-t2').textContent=fmt(d+row.t2);
+  const r=R_OF(row.b), ss=S_OF(row.b);
+  $('r-r').textContent=`${fmt(r[0])} ~ ${fmt(r[1])}`;
+  $('r-s').textContent=`${fmt(ss[0])} ~ ${fmt(ss[1])}`;
+  $('r-l').textContent=`${row.l0} ~ ${row.l1}`;
+  $('r-m').textContent=`${mass(row.b*row.h)} kg`;
+
+  // L 校验
+  const lc=$('lcheck');
+  if(Lv){
+    const it=it14(Lv);
+    if(Lv>=row.l0&&Lv<=row.l1){
+      lc.className='lcheck ok';
+      lc.textContent=`✔ L=${Lv} 在允许范围 ${row.l0}~${row.l1} 内；键长偏差 h14：0 / −${fmt(it/1000)}`;
+    }else{
+      const cand=LSERIES.filter(x=>x>=row.l0&&x<=row.l1);
+      const near=cand.reduce((a,c)=>Math.abs(c-Lv)<Math.abs(a-Lv)?c:a,cand[0]);
+      lc.className='lcheck bad';
+      lc.textContent=`✘ L=${Lv} 超出该规格允许范围 ${row.l0}~${row.l1}，建议取标准系列值 L=${near}`;
+    }
+  }else{lc.className='lcheck';}
+
+  // 三种连接型式表
+  $('fit-tbl').innerHTML=`
+   <tr><th rowspan="2">键槽宽 b</th><th colspan="2">松连接</th><th colspan="2">正常连接</th><th>紧密连接</th></tr>
+   <tr><th>轴槽 H9</th><th>毂槽 D10</th><th>轴槽 N9</th><th>毂槽 JS9</th><th>轴槽、毂槽 P9</th></tr>
+   <tr>
+     <td><b>${row.b}</b></td>
+     <td class="${fit==='loose'?'on':''}">${rng(dv.H9[0],dv.H9[1])}</td>
+     <td class="${fit==='loose'?'on':''}">${rng(dv.D10[0],dv.D10[1])}</td>
+     <td class="${fit==='normal'?'on':''}">${rng(dv.N9[0],dv.N9[1])}</td>
+     <td class="${fit==='normal'?'on':''}">${jss(dv.JS9)}</td>
+     <td class="${fit==='tight'?'on':''}">${rng(dv.P9[0],dv.P9[1])}</td>
+   </tr>`;
+  const fname={loose:'松连接',normal:'正常连接',tight:'紧密连接'}[fit];
+  $('fit-note').textContent=`当前按【${fname}】高亮显示。示例：轴槽宽标注 b${fit==='normal'?' N9':' H9'} —— 按 b=${row.b} 查表取偏差。`;
+
+  // 剖面图
+  $('diagram-box').innerHTML=drawSVG(row,d,Lv);
+
+  // 完整表
+  $('full-tbl').innerHTML=buildFull(row);
+}
+
+function buildFull(hit){
+  let h=`<thead><tr>
+    <th rowspan="2">轴径 d</th><th colspan="2">键的公称尺寸</th><th rowspan="2">键长 L 范围</th>
+    <th rowspan="2">轴槽深<br>t₁</th><th rowspan="2">毂槽深<br>t₂</th><th colspan="2">键槽圆角 r</th><th rowspan="2">键倒角 s</th><th rowspan="2">每100mm<br>质量/kg≈</th></tr>
+    <tr><th>b（h8）</th><th>h（h11）</th></tr></thead><tbody>`;
+  ROWS.forEach((r,i)=>{
+    const rr=R_OF(r.b), ss=S_OF(r.b), hitCls=hit===r?' class="hit"':'';
+    const dTxt=r.d0===6?`自6~${r.d1}`:`&gt;${r.d0}~${r.d1}`;
+    const rowspan=(i>0&&ROWS[i-1].d1===r.d0&&r.d0!==6)?'':'';
+    h+=`<tr${hitCls}><td>${dTxt}</td><td>${r.b}</td><td>${r.h}</td><td>${r.l0}~${r.l1}</td>
+        <td>${fmt(r.t1)}<small> (+${fmt(TDEV(r.b))})</small></td><td>${fmt(r.t2)}<small> (+${fmt(TDEV(r.b))})</small></td>
+        <td>${fmt(rr[0])}</td><td>${fmt(rr[1])}</td><td>${fmt(ss[0])}~${fmt(ss[1])}</td><td>${mass(r.b*r.h)}</td></tr>`;
+  });
+  h+=`</tbody>`;
+  return h;
+}
+
+/* ================= 初始化 ================= */
+(function(){
+  const sel=$('L');
+  LSERIES.forEach(v=>{const o=document.createElement('option');o.value=v;o.textContent=v;sel.appendChild(o);});
+  ['d','fit','L'].forEach(id=>$(id).addEventListener('input',render));
+  $('copyBtn').addEventListener('click',()=>{
+    const{row,d,L,fit}=cur; if(!row)return;
+    const dv=DEV[BDEV[row.b]], td=TDEV(row.b);
+    const txt=[
+      `普通平键键槽（GB/T 1095-2003）`,
+      `轴径 d = ${fmt(d)} mm → 键 ${row.b}×${row.h}${L?'×'+L:''}`,
+      `轴槽：b ${fit==='loose'?'H9 '+rng(dv.H9[0],dv.H9[1]):fit==='normal'?'N9 '+rng(dv.N9[0],dv.N9[1]):'P9 '+rng(dv.P9[0],dv.P9[1])}`,
+      `　　t₁ = ${fmt(row.t1)} (+${fmt(td)}/0)，d−t₁ = ${fmt(d-row.t1)}（偏差取负）`,
+      `毂槽：b ${fit==='loose'?'D10 '+rng(dv.D10[0],dv.D10[1]):fit==='normal'?'JS9 '+jss(dv.JS9):'P9 '+rng(dv.P9[0],dv.P9[1])}`,
+      `　　t₂ = ${fmt(row.t2)} (+${fmt(td)}/0)，d+t₂ = ${fmt(d+row.t2)}`,
+      `键槽圆角 r = ${fmt(R_OF(row.b)[0])}~${fmt(R_OF(row.b)[1])}；键倒角 s = ${fmt(S_OF(row.b)[0])}~${fmt(S_OF(row.b)[1])}`,
+      `键长范围 ${row.l0}~${row.l1}（轴槽长公差 H14）`
+    ].join('\n');
+    navigator.clipboard.writeText(txt).then(()=>{$('copyBtn').textContent='已复制 ✓';setTimeout(()=>$('copyBtn').textContent='复制结果',1500);});
+  });
+  render();
+})();
+</script>
+</body>
+</html>
